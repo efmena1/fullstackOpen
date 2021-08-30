@@ -1,6 +1,23 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
+const DisplayAnecdote = ({anecdotes,points}) => {
+  const mostVoted = points.indexOf(Math.max(...points));
+  if (Math.max(...points) === 0){
+    return(
+      <div>
+        <h2>No votes yet</h2>
+      </div>
+    )
+  }
+  return (
+    <div>
+      <h2>Most Voted Anecdote is:</h2>
+      <p>{anecdotes[mostVoted]}</p>
+    </div>
+  )
+}
+
 const Button = ({ onClick, text }) => (
   <button onClick={onClick}>
     {text}
@@ -26,6 +43,7 @@ const App = (props) => {
       <p>Votes: {points[selected]}</p>
       <Button onClick={handleVoteClick(selected)} text="vote"/>
       <Button onClick={handleNextClick(anecdotes)} text="next anecdote"/>
+      <DisplayAnecdote anecdotes={anecdotes} points ={points} />
     </div>
   )
 }
