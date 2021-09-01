@@ -1,9 +1,43 @@
 import React, { useState } from "react";
 
+const Filter = ({ state, handler }) => {
+  return (
+    <div>
+      filter shown with
+      <input value={state} onChange={handler} />
+    </div>
+  );
+};
+
+const PersonForm = (props) => {
+  return (
+    <form onSubmit={props.addPerson}>
+      <div>
+        name:
+        <input
+          value={props.Name}
+          onChange={props.nameHandler}
+          required={true}
+        />
+      </div>
+      <div>
+        number:
+        <input
+          value={props.Number}
+          onChange={props.numberHandler}
+          required={true}
+        />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  );
+};
+
 const Persons = ({ persons }) => {
   return (
     <div>
-      <h2>Numbers</h2>
       <div>
         {persons.map((person) => (
           <p key={person.name}>
@@ -52,35 +86,28 @@ const App = () => {
   };
 
   const PersonsData =
-    persons.findIndex((person) => person.name === filter) >= 0
-      ? persons.filter((person) => person.name === filter)
+    persons.findIndex(
+      (person) => person.name.toLocaleLowerCase() === filter.toLocaleLowerCase()
+    ) >= 0
+      ? persons.filter(
+          (person) =>
+            person.name.toLocaleLowerCase() === filter.toLocaleLowerCase()
+        )
       : persons;
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <div>
-        filter shown with
-        <input value={filter} onChange={handleFilterChange} />
-      </div>
+      <Filter state={filter} handler={handleFilterChange} />
       <h2>Add a new person</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name:
-          <input value={newName} onChange={handleNameChange} required={true} />
-        </div>
-        <div>
-          number:
-          <input
-            value={newNumber}
-            onChange={handleNumberChange}
-            required={true}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm
+        name={newName}
+        nameHandler={handleNameChange}
+        number={newNumber}
+        numberHandler={handleNumberChange}
+        addPerson={addPerson}
+      />
+      <h3>Numbers</h3>
       <Persons persons={PersonsData} />
     </div>
   );
