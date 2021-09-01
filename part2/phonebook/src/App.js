@@ -92,9 +92,7 @@ const App = () => {
   };
 
   const PersonsData =
-    persons.findIndex(
-      (person) => person.name.toLocaleLowerCase() === filter.toLocaleLowerCase()
-    ) >= 0
+    
       ? persons.filter(
           (person) =>
             person.name.toLocaleLowerCase() === filter.toLocaleLowerCase()
