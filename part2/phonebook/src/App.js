@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react";
 import personService from "./services/persons";
 import { PersonForm, Persons } from "./components/persons";
 import Filter from "./components/filter";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [errorMessage, setErrorMessage] = useState({
+    message:null,
+    state:false
+  });
 
   useEffect(() => {
     personService.getAll().then((persons) => {
@@ -38,12 +43,28 @@ const App = () => {
                 person.id !== personId.id ? person : updatedPerson
               )
             );
-          });
+          })
+          .catch((error)=>{
+            setErrorMessage({
+              message:`Information of '${personObject.name}' has already been removed from server`,
+              state: false
+            });
+            setTimeout(() => {
+              setErrorMessage({message: null,state: false});
+            }, 5000);
+          })
       }
     } else {
       personService.create(personObject).then((person) => {
         setPersons(persons.concat(person));
       });
+      setErrorMessage({
+        message:`Added '${personObject.name}' to the PhoneBook`,
+        state: true
+      });
+      setTimeout(() => {
+        setErrorMessage({message: null,state: false});
+      }, 5000);
     }
     setNewName("");
     setNewNumber("");
@@ -58,7 +79,26 @@ const App = () => {
         personService.getAll().then((persons) => {
           setPersons(persons);
         });
-      });
+        setErrorMessage({
+          message:`Successfully deleted '${personToDelete.name}' from the PhoneBook`,
+          state: true
+        });
+        setTimeout(() => {
+          setErrorMessage({message: null,state: false});
+        }, 5000);
+      })
+      .catch(error=>{
+        setErrorMessage({
+          message:`Information of '${personToDelete.name}' has already been removed from server`,
+          state: false
+        });
+        setTimeout(() => {
+          setErrorMessage({message: null,state: false});
+        }, 5000);
+        personService.getAll().then((persons) => {
+          setPersons(persons);
+        });
+      })
     }
   };
 
@@ -75,6 +115,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={errorMessage.message} state={errorMessage.state} />
       <Filter state={filter} handler={setFilter} />
       <h2>Add a new person</h2>
       <PersonForm

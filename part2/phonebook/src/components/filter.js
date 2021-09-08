@@ -6,7 +6,7 @@ const Filter = ({ state, handler }) => {
       };
   return (
     <div>
-      filter shown with
+      filter shown with {" "}
       <input value={state} placeholder='Search a name' onChange={handleFilterChange} />
     </div>
   );
