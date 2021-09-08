@@ -1,5 +1,13 @@
 import React from "react";
 
+const Button = ({ text, onClick, value }) => {
+  return (
+    <>
+      <button value={value} onClick={onClick}>{text}</button>
+    </>
+  );
+};
+
 export const PersonForm = ({
   name,
   nameHandler,
@@ -42,15 +50,21 @@ export const PersonForm = ({
   );
 };
 
-export const Persons = ({ persons }) => {
+export const Persons = ({ persons, deletePerson }) => {
   return (
     <div>
       <div>
-        {persons.map((person) => (
-          <p key={person.name}>
-            {person.name}, {person.number}
-          </p>
-        ))}
+        <table>
+          <tbody>
+          {persons.map((person) => (
+            <tr key={person.id}>
+              <td>{person.name}</td>
+              <td>{person.number}</td>
+              <td><Button value={person.id} onClick={deletePerson} text="delete" /></td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
