@@ -1,9 +1,16 @@
 const http = require("http");
 const express = require("express");
 const { request, response } = require("express");
+const morgan = require('morgan')
 const app = express();
 
+morgan.token('body', function (req) { return JSON.stringify(req.body) })
+
+
 app.use(express.json());
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+
 
 const PORT = 3001;
 app.listen(PORT, () => {
@@ -54,7 +61,7 @@ app.get("/info", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  console.log(persons);
+  //console.log(persons);
   response.json(persons);
 });
 
