@@ -10,8 +10,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
   const [errorMessage, setErrorMessage] = useState({
-    message:null,
-    state:false
+    message: null,
+    state: false,
   });
 
   useEffect(() => {
@@ -44,31 +44,44 @@ const App = () => {
               )
             );
             setErrorMessage({
-              message:`Updated '${personObject.name}'s number to the PhoneBook`,
-              state: true
+              message: `Updated '${personObject.name}'s number to the PhoneBook`,
+              state: true,
             });
           })
-          .catch((error)=>{
+          .catch((error) => {
+            const errMessage = error.response.data["error"];
             setErrorMessage({
-              message:`Information of '${personObject.name}' has already been removed from server`,
-              state: false
+              message: errMessage,
+              state: false,
             });
             setTimeout(() => {
-              setErrorMessage({message: null,state: false});
+              setErrorMessage({ message: null, state: false });
             }, 5000);
-          })
+          });
       }
     } else {
-      personService.create(personObject).then((person) => {
-        setPersons(persons.concat(person));
-      });
-      setErrorMessage({
-        message:`Added '${personObject.name}' to the PhoneBook`,
-        state: true
-      });
-      setTimeout(() => {
-        setErrorMessage({message: null,state: false});
-      }, 5000);
+      personService
+        .create(personObject)
+        .then((person) => {
+          setPersons(persons.concat(person));
+          setErrorMessage({
+            message: `Added '${personObject.name}' to the PhoneBook`,
+            state: true,
+          });
+          setTimeout(() => {
+            setErrorMessage({ message: null, state: false });
+          }, 5000);
+        })
+        .catch((error) => {
+          const errMessage = error.response.data["error"];
+          setErrorMessage({
+            message: errMessage,
+            state: false,
+          });
+          setTimeout(() => {
+            setErrorMessage({ message: null, state: false });
+          }, 5000);
+        });
     }
     setNewName("");
     setNewNumber("");
@@ -79,30 +92,32 @@ const App = () => {
       (person) => person.id === event.target.value
     );
     if (window.confirm(`¿Delete ${personToDelete.name}?`)) {
-      personService.deletePerson(personToDelete.id).then((person) => {
-        personService.getAll().then((persons) => {
-          setPersons(persons);
+      personService
+        .deletePerson(personToDelete.id)
+        .then((person) => {
+          personService.getAll().then((persons) => {
+            setPersons(persons);
+          });
+          setErrorMessage({
+            message: `Successfully deleted '${personToDelete.name}' from the PhoneBook`,
+            state: true,
+          });
+          setTimeout(() => {
+            setErrorMessage({ message: null, state: false });
+          }, 5000);
+        })
+        .catch((error) => {
+          setErrorMessage({
+            message: `Information of '${personToDelete.name}' has already been removed from server`,
+            state: false,
+          });
+          setTimeout(() => {
+            setErrorMessage({ message: null, state: false });
+          }, 5000);
+          personService.getAll().then((persons) => {
+            setPersons(persons);
+          });
         });
-        setErrorMessage({
-          message:`Successfully deleted '${personToDelete.name}' from the PhoneBook`,
-          state: true
-        });
-        setTimeout(() => {
-          setErrorMessage({message: null,state: false});
-        }, 5000);
-      })
-      .catch(error=>{
-        setErrorMessage({
-          message:`Information of '${personToDelete.name}' has already been removed from server`,
-          state: false
-        });
-        setTimeout(() => {
-          setErrorMessage({message: null,state: false});
-        }, 5000);
-        personService.getAll().then((persons) => {
-          setPersons(persons);
-        });
-      })
     }
   };
 
