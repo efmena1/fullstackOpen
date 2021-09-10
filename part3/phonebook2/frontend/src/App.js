@@ -72,7 +72,7 @@ const App = () => {
 
   const deletePerson = (event) => {
     const personToDelete = persons.find(
-      (person) => person.id === parseInt(event.target.value)
+      (person) => person.id === event.target.value
     );
     if (window.confirm(`¿Delete ${personToDelete.name}?`)) {
       personService.deletePerson(personToDelete.id).then((person) => {
