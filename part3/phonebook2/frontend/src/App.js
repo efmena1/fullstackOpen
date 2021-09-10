@@ -43,6 +43,10 @@ const App = () => {
                 person.id !== personId.id ? person : updatedPerson
               )
             );
+            setErrorMessage({
+              message:`Updated '${personObject.name}'s number to the PhoneBook`,
+              state: true
+            });
           })
           .catch((error)=>{
             setErrorMessage({
