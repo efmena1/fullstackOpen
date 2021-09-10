@@ -18,28 +18,34 @@ app.use(
 );
 
 const checkName = (name) => {
-  Person.findOne({ name: name }).then((result) => {
-    if (result === null) return false;
-    return true;
-  });
+  Person.findOne({ name: name })
+    .then((result) => {
+      if (result === null) return false;
+      return true;
+    })
+    .catch((error) => next(error));
 };
 
 app.get("/info", (request, response) => {
-  Person.count({}).then((result) => {
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.end(
-      Buffer.from(`
+  Person.count({})
+    .then((result) => {
+      response.writeHead(200, { "Content-Type": "text/html" });
+      response.end(
+        Buffer.from(`
   <p>PhoneBook has info for ${result} people</p>
   <p>${new Date()}</p>
   `)
-    );
-  });
+      );
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/api/persons", (request, response) => {
-  Person.find({}).then(result=>{
-    response.json(result);
-  })
+  Person.find({})
+    .then((result) => {
+      response.json(result);
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/api/persons/:id", (request, response) => {
@@ -68,9 +74,12 @@ app.post("/api/persons", (request, response) => {
     date: new Date(),
   });
   console.log(newPerson);
-  newPerson.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  newPerson
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -89,7 +98,6 @@ app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
-
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
   }
