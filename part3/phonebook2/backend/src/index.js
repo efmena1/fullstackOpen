@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const { request, response, query } = require("express");
 const morgan = require("morgan");
 const Person = require("./models/person");
 
@@ -14,15 +13,6 @@ morgan.token("body", function (req) {
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
-
-const checkName = (name, next) => {
-  Person.findOne({ name: name })
-    .then((result) => {
-      if (result === null) return false;
-      return true;
-    })
-    .catch((error) => next(error));
-};
 
 app.get("/info", (request, response, next) => {
   Person.count({})
@@ -60,9 +50,6 @@ app.post("/api/persons", (request, response, next) => {
     return response.status(400).json({
       error: "name or number missing",
     });
-  }
-  if (checkName(body.name)) {
-    return response.status(400).json({ error: "Name must be unique" });
   }
   const newPerson = new Person({
     name: body.name,
