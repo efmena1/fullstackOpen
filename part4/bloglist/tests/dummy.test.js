@@ -87,7 +87,11 @@ describe('total likes', () => {
 
   test('return the author with most ammount of blogs with a list of six', () => {
     const result = listHelper.mostBlogs(listWithSixBlogs);
-    console.log(result);
     expect(result.blogs).toBe(3);
+  });
+
+  test('return the author with most ammount of likes with a list of six', () => {
+    const result = listHelper.mostLikes(listWithSixBlogs);
+    expect(result.likes).toBe(17);
   });
 });
