@@ -79,4 +79,9 @@ describe('total likes', () => {
     const result = listHelper.totalLikes(listWithSixBlogs);
     expect(result).toBe(36);
   });
+
+  test('return the blog with mostlikes with a list of six', () => {
+    const result = listHelper.favoriteBlog(listWithSixBlogs);
+    expect(result.likes).toEqual(listWithSixBlogs[2].likes);
+  });
 });
