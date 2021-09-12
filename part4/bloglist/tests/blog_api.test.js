@@ -50,6 +50,22 @@ test('a valid blog can be added', async () => {
   expect(contents).toContain('new test blog');
 });
 
+test('return 0 likes quen likes is missing in request', async () => {
+  const newBlog = {
+    title: 'new test blog',
+    author: 'Juan Perez',
+    url: 'http://google.com',
+  };
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+  console.log(response.body);
+  expect(response.body.likes).toBe(0);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
