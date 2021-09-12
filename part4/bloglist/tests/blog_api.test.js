@@ -62,9 +62,20 @@ test('return 0 likes quen likes is missing in request', async () => {
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/);
-  console.log(response.body);
   expect(response.body.likes).toBe(0);
 });
+
+test('check bad request when missing title and url', async () => {
+  const newBlog = {
+    author: 'Juan Perez',
+    likes: 10,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400);
+}, 100000);
 
 afterAll(() => {
   mongoose.connection.close();
