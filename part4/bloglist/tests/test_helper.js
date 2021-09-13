@@ -53,7 +53,12 @@ const initialBlogs = [
 ];
 
 const nonExistingId = async () => {
-  const blog = new Blog({ author: 'willremovethissoon', date: new Date() });
+  const blog = new Blog({
+    title: 'willremovethissoon',
+    author: 'willremovethissoon',
+    url: 'willremovethissoon',
+    date: new Date(),
+  });
   await blog.save();
   await blog.remove();
 
