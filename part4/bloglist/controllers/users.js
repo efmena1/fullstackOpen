@@ -10,6 +10,9 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { body } = request;
   const passMinLength = 3;
+  if (body.password === undefined) {
+    return response.status(400).json({ error: '`password` missing' });
+  }
   if (body.password.length < passMinLength) {
     return response.status(400).json({ error: '`password` must be at least 3 characters long' });
   }
