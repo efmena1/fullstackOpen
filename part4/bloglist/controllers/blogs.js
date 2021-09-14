@@ -18,8 +18,10 @@ blogsRouter.post('/', async (request, response) => {
 
   const user = await User.findById(decodedToken.id);
 
-  if (!body.title && !body.url) {
-    return response.status(400).end();
+  if (!body.title || !body.url) {
+    return response.status(400).json({
+      error: 'missing title and/or url',
+    });
   }
 
   const likes = body.likes
