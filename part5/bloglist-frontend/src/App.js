@@ -1,79 +1,108 @@
-import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
-import LoginForm from './components/Form'
+import React, { useState, useEffect } from "react";
+import Blog from "./components/Blog";
+import {LoginForm, CreateForm} from "./components/Forms";
 
-import blogService from './services/blogs'
-import loginService from './services/login'
+import blogService from "./services/blogs";
+import loginService from "./services/login";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs] = useState([]);
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
+  const [title,setTitle] = useState('')
+  const [author,setAuthor] = useState('')
+  const [url,setUrl] = useState('')
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    blogService.getAll().then((blogs) => setBlogs(blogs));
+  }, []);
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
     }
-  }, [])
+  }, []);
 
-  const loginHandle = async (event) =>{
-    event.preventDefault()
-    try{
+  const loginHandle = async (event) => {
+    event.preventDefault();
+    try {
       const user = await loginService.login({
-        username,password
-      })
-      window.localStorage.setItem(
-        'loggedBlogAppUser', JSON.stringify(user)
-      )
-      setUser(user)
-      setUsername('')
-      setPassword('') 
+        username,
+        password,
+      });
+      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+      blogService.setToken(user.token);
+      setUser(user);
+      setUsername("");
+      setPassword("");
     } catch (exeption) {
-      console.log('Wrong Credentials')
+      console.log("Wrong Credentials");
     }
-  }
+  };
 
-  const logoutHandle = async (event) =>{
-    window.localStorage.clear()
-    setUser(null)
-  }
+  const logoutHandle = async (event) => {
+    window.localStorage.clear();
+    setUser(null);
+  };
   if (user === null) {
-    return(
+    return (
       <div>
         <h2>Log in to application</h2>
         <LoginForm
-          username = {username}
-          userhandle = {setUsername}
-          password = {password}
-          passwordHandle = {setPassword}
-          loginHandle = {loginHandle}
+          username={username}
+          userhandle={setUsername}
+          password={password}
+          passwordHandle={setPassword}
+          loginHandle={loginHandle}
         />
       </div>
-    )
+    );
   }
+
+  const handleCreate = async (event) => {
+    const newBlog = {
+      title: title,
+      author: author,
+      url: url,
+    }
+    const response = await blogService.create(newBlog)
+    setBlogs(blogs.concat(response))
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
+
+  
   return (
     <div>
       <h2>blogs</h2>
       <p>
         <b>{user.name} logged in</b>
-        <button type='button' onClick={() => logoutHandle()}>logout</button>
+        <button type="button" onClick={() => logoutHandle()}>
+          logout
+        </button>
       </p>
-      {blogs.map(blog =>
+      <h2>create new</h2>
+      <CreateForm 
+        title={title}
+        handleTitle={setTitle}
+        author={author}
+        handleAuthor={setAuthor}
+        url={url}
+        handleUrl={setUrl}
+        handleCreate={handleCreate}/>
+      {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
-      )}
+      ))}
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
