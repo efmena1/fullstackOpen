@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import {LoginForm, CreateForm} from "./components/Forms";
+import Notification from "./components/Notification";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
+  const [notificationMessage, setNotificationMessage] = useState({
+    message:null,
+    state:false
+  });
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +47,14 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exeption) {
-      console.log("Wrong Credentials");
+      console.log('error')
+      setNotificationMessage({
+        message:'Invalid username or password',
+        state: false
+      })
+      setTimeout(() => {
+        setNotificationMessage({message: null,state: false});
+      }, 5000)
     }
   };
 
@@ -50,21 +62,6 @@ const App = () => {
     window.localStorage.clear();
     setUser(null);
   };
-  if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        <LoginForm
-          username={username}
-          userhandle={setUsername}
-          password={password}
-          passwordHandle={setPassword}
-          loginHandle={loginHandle}
-        />
-      </div>
-    );
-  }
-
   const handleCreate = async (event) => {
     const newBlog = {
       title: title,
@@ -76,13 +73,36 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    setNotificationMessage({
+      message:`a new blog ${newBlog.title} by ${newBlog.author} added!`,
+      state: true
+    })
+    setTimeout(() => {
+      setNotificationMessage({message: null,state: false});
+    }, 5000)
   }
 
 
   
+  if (user === null) {
+    return (
+      <div>
+        <h2>Log in to application</h2>
+        <Notification message={notificationMessage.message} state={notificationMessage.state} />
+        <LoginForm
+          username={username}
+          userhandle={setUsername}
+          password={password}
+          passwordHandle={setPassword}
+          loginHandle={loginHandle}
+        />
+      </div>
+    );
+  }
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={notificationMessage.message} state={notificationMessage.state} />
       <p>
         <b>{user.name} logged in</b>
         <button type="button" onClick={() => logoutHandle()}>
