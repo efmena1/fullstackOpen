@@ -27,10 +27,10 @@ const App = () => {
   const BlogFormRef = useRef();
 
   const sortBlogs = (blogs) => {
-    return blogs.sort((a,b) =>{
-       return b.likes - a.likes
-    })
-  }
+    return blogs.sort((a, b) => {
+      return b.likes - a.likes;
+    });
+  };
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(sortBlogs(blogs)));
@@ -95,18 +95,34 @@ const App = () => {
   };
 
   const handleLike = async (event) => {
-    const blogId = event.target.value
-    const BlogToUpdate = blogs.find(blog => blog.id === blogId)
+    const blogId = event.target.value;
+    const blogToUpdate = blogs.find((blog) => blog.id === blogId);
     const newBlog = {
-      user: BlogToUpdate.user.id,
-      likes: BlogToUpdate.likes + 1,
-      author: BlogToUpdate.author,
-      title: BlogToUpdate.title,
-      url: BlogToUpdate.url,
+      user: blogToUpdate.user.id,
+      likes: blogToUpdate.likes + 1,
+      author: blogToUpdate.author,
+      title: blogToUpdate.title,
+      url: blogToUpdate.url,
+    };
+    const updatedBlog = await blogService.update(blogId, newBlog);
+    setBlogs(
+      sortBlogs(blogs.map((blog) => (blog.id !== blogId ? blog : updatedBlog)))
+    );
+  };
+
+  const handleDelete = async (event) => {
+    const blogId = event.target.value;
+    const blogToDelete = blogs.find((blog) => blog.id === blogId);
+    if (
+      window.confirm(
+        `Remove blog ${blogToDelete.title} by ${blogToDelete.author}`
+      )
+    ) {
+      await blogService.deleteBlog(blogId);
+      const blogs = await blogService.getAll();
+      setBlogs(sortBlogs(blogs));
     }
-    const updatedBlog = await blogService.update(blogId,newBlog);
-    setBlogs(sortBlogs(blogs.map((blog) => (blog.id !== blogId ? blog : updatedBlog))))
-  }
+  };
 
   if (user === null) {
     return (
@@ -143,15 +159,20 @@ const App = () => {
         <h2>create new</h2>
         <BlogForm
           title={title}
-          handleTitle={({target}) => setTitle(target.value)}
+          handleTitle={({ target }) => setTitle(target.value)}
           author={author}
-          handleAuthor={({target}) => setAuthor(target.value)}
+          handleAuthor={({ target }) => setAuthor(target.value)}
           url={url}
-          handleUrl={({target}) => setUrl(target.value)}
+          handleUrl={({ target }) => setUrl(target.value)}
           onSubmit={handleCreate}
         />
       </Togglable>
-      <Blogs handleLike={handleLike} blogs={blogs}/>
+      <Blogs
+        handleLike={handleLike}
+        handleDelete={handleDelete}
+        user={user}
+        blogs={blogs}
+      />
     </div>
   );
 };
