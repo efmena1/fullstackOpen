@@ -7,7 +7,6 @@ const Blog = ({ blog, style, handleLike, handleDelete, user }) => {
   const toggleVisibility = () => {
     setVisible(!visible);
   };
-
   return (
     <>
       <tr>
