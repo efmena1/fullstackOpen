@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
+import Blogs from "./components/Blog";
 import LoginForm from "./components/LoginForm";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
@@ -122,25 +122,15 @@ const App = () => {
         <h2>create new</h2>
         <BlogForm
           title={title}
-          handleTitle={setTitle}
+          handleTitle={({target}) => setTitle(target.value)}
           author={author}
-          handleAuthor={setAuthor}
+          handleAuthor={({target}) => setAuthor(target.value)}
           url={url}
-          handleUrl={setUrl}
-          handleCreate={handleCreate}
+          handleUrl={({target}) => setUrl(target.value)}
+          onSubmit={handleCreate}
         />
       </Togglable>
-      <table>
-        <tbody>
-          <tr>
-            <th>Title</th>
-            <th>Author</th>
-          </tr>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
-        </tbody>
-      </table>
+      <Blogs blogs={blogs}/>
     </div>
   );
 };

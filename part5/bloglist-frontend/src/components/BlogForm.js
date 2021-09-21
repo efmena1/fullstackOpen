@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 const BlogForm = ({
   title,
@@ -7,36 +7,27 @@ const BlogForm = ({
   handleAuthor,
   url,
   handleUrl,
-  handleCreate
-}) =>{
-  const handleTitleChange = (event) => {
-    handleTitle(event.target.value)
-  }
-  const handleAuthorChange = (event) => {
-    handleAuthor(event.target.value)
-  }
-  const handleUrlChange = (event) => {
-    handleUrl(event.target.value)
-  }
+  onSubmit,
+}) => {
   return (
     <div>
-      <form onSubmit={handleCreate}>
-      </form>
+      <form onSubmit={onSubmit}>
         <p>
           <b>Title:</b>
-          <input type='text' value={title} onChange={handleTitleChange} />
+          <input type="text" value={title} onChange={handleTitle} />
         </p>
         <p>
           <b>Author:</b>
-          <input type='text' value={author} onChange={handleAuthorChange} />
+          <input type="text" value={author} onChange={handleAuthor} />
         </p>
         <p>
           <b>URL:</b>
-          <input type='text' value={url} onChange={handleUrlChange} />
+          <input type="text" value={url} onChange={handleUrl} />
         </p>
-        <button type='submit' onClick={handleCreate}>create</button>
+        <button type="submit">create</button>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default BlogForm
+export default BlogForm;
