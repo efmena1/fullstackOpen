@@ -26,8 +26,14 @@ const App = () => {
 
   const BlogFormRef = useRef();
 
+  const sortBlogs = (blogs) => {
+    return blogs.sort((a,b) =>{
+       return b.likes - a.likes
+    })
+  }
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => setBlogs(sortBlogs(blogs)));
   }, []);
 
   useEffect(() => {
@@ -75,7 +81,7 @@ const App = () => {
       url: url,
     };
     const response = await blogService.create(newBlog);
-    setBlogs(blogs.concat(response));
+    setBlogs(sortBlogs(blogs.concat(response)));
     setTitle("");
     setAuthor("");
     setUrl("");
@@ -99,7 +105,7 @@ const App = () => {
       url: BlogToUpdate.url,
     }
     const updatedBlog = await blogService.update(blogId,newBlog);
-    setBlogs(blogs.map((blog) => (blog.id !== blogId ? blog : updatedBlog)))
+    setBlogs(sortBlogs(blogs.map((blog) => (blog.id !== blogId ? blog : updatedBlog))))
   }
 
   if (user === null) {
