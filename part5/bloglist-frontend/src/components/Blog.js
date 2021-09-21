@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import PropTypes from 'prop-types';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, style, handleLike, handleDelete, user }) => {
-  const [visible, setVisible] = useState(false);
-  const showWhenVisible = { display: visible ? "" : "none" };
+  const [visible, setVisible] = useState(false)
+  const showWhenVisible = { display: visible ? '' : 'none' }
 
   const toggleVisibility = () => {
-    setVisible(!visible);
-  };
+    setVisible(!visible)
+  }
   return (
     <>
       <tr>
         <td style={style}>{blog.title}</td>
         <td style={style}>
           <button type="button" onClick={toggleVisibility}>
-            {visible ? "hide" : "view"}
+            {visible ? 'hide' : 'view'}
           </button>
         </td>
       </tr>
@@ -38,7 +38,7 @@ const Blog = ({ blog, style, handleLike, handleDelete, user }) => {
           {blog.user.username === user.username && (
             <button
               type="button"
-              style={{ color: "red" }}
+              style={{ color: 'red' }}
               value={blog.id}
               onClick={handleDelete}
             >
@@ -48,8 +48,8 @@ const Blog = ({ blog, style, handleLike, handleDelete, user }) => {
         </td>
       </tr>
     </>
-  );
-};
+  )
+}
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   style: PropTypes.object.isRequired,
@@ -62,11 +62,11 @@ const Blogs = ({ blogs, handleLike, handleDelete, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-    borderCollapse: "collapse",
-  };
+    borderCollapse: 'collapse',
+  }
   return (
     <div>
       <table style={blogStyle}>
@@ -87,13 +87,13 @@ const Blogs = ({ blogs, handleLike, handleDelete, user }) => {
         </tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 Blogs.propTypes = {
-  blogs: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired,
   handleLike: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
 }
 
-export default Blogs;
+export default Blogs
