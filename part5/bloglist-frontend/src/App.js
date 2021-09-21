@@ -66,6 +66,7 @@ const App = () => {
     window.localStorage.clear();
     setUser(null);
   };
+
   const handleCreate = async (event) => {
     BlogFormRef.current.toggleVisibility();
     const newBlog = {
@@ -86,6 +87,20 @@ const App = () => {
       setNotificationMessage({ message: null, state: false });
     }, 5000);
   };
+
+  const handleLike = async (event) => {
+    const blogId = event.target.value
+    const BlogToUpdate = blogs.find(blog => blog.id === blogId)
+    const newBlog = {
+      user: BlogToUpdate.user.id,
+      likes: BlogToUpdate.likes + 1,
+      author: BlogToUpdate.author,
+      title: BlogToUpdate.title,
+      url: BlogToUpdate.url,
+    }
+    const updatedBlog = await blogService.update(blogId,newBlog);
+    setBlogs(blogs.map((blog) => (blog.id !== blogId ? blog : updatedBlog)))
+  }
 
   if (user === null) {
     return (
@@ -130,7 +145,7 @@ const App = () => {
           onSubmit={handleCreate}
         />
       </Togglable>
-      <Blogs blogs={blogs}/>
+      <Blogs handleLike={handleLike} blogs={blogs}/>
     </div>
   );
 };

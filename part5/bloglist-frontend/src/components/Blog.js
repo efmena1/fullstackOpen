@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Blog = ({ blog, style }) => {
+const Blog = ({ blog, style, handleLike }) => {
   const [visible, setVisible] = useState(false);
   const showWhenVisible = { display: visible ? "" : "none" };
 
@@ -26,7 +26,7 @@ const Blog = ({ blog, style }) => {
             <li><b>URL: </b> {blog.url}</li>
             <li>
               <b>Likes: </b> {blog.likes} 
-              <button type='button'>like</button>
+              <button type='button' value={blog.id} onClick={handleLike}>like</button>
             </li>
             <li><b>Author: </b>{blog.author}</li>
           </ul>
@@ -36,7 +36,7 @@ const Blog = ({ blog, style }) => {
   );
 };
 
-const Blogs = ({ blogs }) => {
+const Blogs = ({ blogs, handleLike }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -53,7 +53,7 @@ const Blogs = ({ blogs }) => {
           <th style={blogStyle}>Blog</th>
         </tr>
         {blogs.map((blog) => (
-          <Blog style={blogStyle} key={blog.id} blog={blog} />
+          <Blog style={blogStyle} key={blog.id} blog={blog} handleLike={handleLike} />
         ))}
       </tbody>
     </table>
