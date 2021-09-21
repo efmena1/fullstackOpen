@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
-import {LoginForm, CreateForm} from "./components/Forms";
+import LoginForm from "./components/LoginForm";
+import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [notificationMessage, setNotificationMessage] = useState({
-    message:null,
-    state:false
+    message: null,
+    state: false,
   });
 
   const [username, setUsername] = useState("");
@@ -18,9 +20,11 @@ const App = () => {
 
   const [user, setUser] = useState(null);
 
-  const [title,setTitle] = useState('')
-  const [author,setAuthor] = useState('')
-  const [url,setUrl] = useState('')
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
+
+  const BlogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -47,14 +51,14 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exeption) {
-      console.log('error')
+      console.log("error");
       setNotificationMessage({
-        message:'Invalid username or password',
-        state: false
-      })
+        message: "Invalid username or password",
+        state: false,
+      });
       setTimeout(() => {
-        setNotificationMessage({message: null,state: false});
-      }, 5000)
+        setNotificationMessage({ message: null, state: false });
+      }, 5000);
     }
   };
 
@@ -63,38 +67,40 @@ const App = () => {
     setUser(null);
   };
   const handleCreate = async (event) => {
+    BlogFormRef.current.toggleVisibility();
     const newBlog = {
       title: title,
       author: author,
       url: url,
-    }
-    const response = await blogService.create(newBlog)
-    setBlogs(blogs.concat(response))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    };
+    const response = await blogService.create(newBlog);
+    setBlogs(blogs.concat(response));
+    setTitle("");
+    setAuthor("");
+    setUrl("");
     setNotificationMessage({
-      message:`a new blog ${newBlog.title} by ${newBlog.author} added!`,
-      state: true
-    })
+      message: `a new blog ${newBlog.title} by ${newBlog.author} added!`,
+      state: true,
+    });
     setTimeout(() => {
-      setNotificationMessage({message: null,state: false});
-    }, 5000)
-  }
+      setNotificationMessage({ message: null, state: false });
+    }, 5000);
+  };
 
-
-  
   if (user === null) {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={notificationMessage.message} state={notificationMessage.state} />
+        <Notification
+          message={notificationMessage.message}
+          state={notificationMessage.state}
+        />
         <LoginForm
           username={username}
-          userhandle={setUsername}
+          userhandle={({ target }) => setUsername(target.value)}
           password={password}
-          passwordHandle={setPassword}
-          loginHandle={loginHandle}
+          passwordHandle={({ target }) => setPassword(target.value)}
+          onSubmit={loginHandle}
         />
       </div>
     );
@@ -102,25 +108,39 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={notificationMessage.message} state={notificationMessage.state} />
+      <Notification
+        message={notificationMessage.message}
+        state={notificationMessage.state}
+      />
       <p>
-        <b>{user.name} logged in</b>
+        <b>{user.name} logged in </b>
         <button type="button" onClick={() => logoutHandle()}>
           logout
         </button>
       </p>
-      <h2>create new</h2>
-      <CreateForm 
-        title={title}
-        handleTitle={setTitle}
-        author={author}
-        handleAuthor={setAuthor}
-        url={url}
-        handleUrl={setUrl}
-        handleCreate={handleCreate}/>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <Togglable buttonLabel="create new blog" ref={BlogFormRef}>
+        <h2>create new</h2>
+        <BlogForm
+          title={title}
+          handleTitle={setTitle}
+          author={author}
+          handleAuthor={setAuthor}
+          url={url}
+          handleUrl={setUrl}
+          handleCreate={handleCreate}
+        />
+      </Togglable>
+      <table>
+        <tbody>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+          </tr>
+          {blogs.map((blog) => (
+            <Blog key={blog.id} blog={blog} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
