@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
 const Notification = ({message,state}) => {
   const SuccessStyle = {
@@ -26,5 +27,9 @@ return (
   </div>
 );
 };
+Notification.propTypes = {
+  message: PropTypes.string.isRequired,
+  style: PropTypes.bool.isRequired,
+}
 
 export default Notification;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from 'prop-types';
 
 const Blog = ({ blog, style, handleLike, handleDelete, user }) => {
   const [visible, setVisible] = useState(false);
@@ -49,6 +50,13 @@ const Blog = ({ blog, style, handleLike, handleDelete, user }) => {
     </>
   );
 };
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  style: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  handleLike: PropTypes.func.isRequired,
+}
 
 const Blogs = ({ blogs, handleLike, handleDelete, user }) => {
   const blogStyle = {
@@ -81,5 +89,11 @@ const Blogs = ({ blogs, handleLike, handleDelete, user }) => {
     </div>
   );
 };
+Blogs.propTypes = {
+  blogs: PropTypes.object.isRequired,
+  handleLike: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+}
 
 export default Blogs;
