@@ -96,4 +96,4 @@ Blogs.propTypes = {
   user: PropTypes.object.isRequired,
 }
 
-export default Blogs
+export { Blogs, Blog }
